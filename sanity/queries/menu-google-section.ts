@@ -12,10 +12,16 @@ export const menuGoogleSectionQuery = groq`
     title,
     intro,
     accordionBehaviour,
+    headingAlignment,
     appearance{
       backgroundColor,
       panelColor,
-      accentColor
+      accentColor,
+      headingColor,
+      tabColor,
+      tabColorDark,
+      categoryColor,
+      categoryColorDark
     },
     categories[]{
       _key,

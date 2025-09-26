@@ -58,10 +58,16 @@ export type MenuGoogleSectionProps = {
   title?: string | null;
   intro?: string | null;
   accordionBehaviour?: "expanded" | "first-open" | null;
+  headingAlignment?: "left" | "center" | null;
   appearance?: {
     backgroundColor?: ColorVariant | null;
     panelColor?: ColorVariant | null;
     accentColor?: ColorVariant | null;
+    headingColor?: ColorVariant | null;
+    tabColor?: ColorVariant | null;
+    tabColorDark?: ColorVariant | null;
+    categoryColor?: ColorVariant | null;
+    categoryColorDark?: ColorVariant | null;
   } | null;
   categories?: MenuGoogleCategory[] | null;
 };
@@ -92,6 +98,7 @@ const COLOR_VARIANT_VALUES = [
   "destructive",
   "muted",
   "white",
+  "black",
   "light-gray",
   "cool-gray",
   "soft-blue",
@@ -111,6 +118,10 @@ const COLOR_FALLBACKS: Record<
   background: {
     base: "var(--background)",
     foreground: "var(--foreground)",
+  },
+  black: {
+    base: "var(--black)",
+    foreground: "var(--black-foreground)",
   },
   primary: {
     base: "var(--primary)",
@@ -191,6 +202,7 @@ const MENU_PALETTE_PRESETS: Record<ColorVariant, { panel: ColorVariant; accent: 
   destructive: { panel: "white", accent: "light-gray" },
   muted: { panel: "white", accent: "primary" },
   white: { panel: "light-gray", accent: "primary" },
+  black: { panel: "charcoal", accent: "white" },
   "light-gray": { panel: "white", accent: "primary" },
   "cool-gray": { panel: "white", accent: "primary" },
   "soft-blue": { panel: "white", accent: "primary" },
@@ -231,58 +243,132 @@ function slugify(input: string, fallback: string) {
   return slug || fallback;
 }
 
+const PRICE_SEGMENT_REGEX = /^(?:£|\$|€)?\s*\d+(?:[.,]\d{1,2})?(?:\s?(?:pp|per|each))?$/i;
+const PRICE_TEXT_REGEX = /^(?:market(?:\s+price)?|m\.?p\.?|mp|ask\s+for\s+price|tbd)$/i;
+
+function cleanText(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function cleanName(value: string) {
+  return cleanText(value.replace(/[–—-]\s*$/, ""));
+}
+
+function isPriceSegment(value?: string | null): value is string {
+  if (!value) {
+    return false;
+  }
+  const normalized = cleanText(value);
+  if (!normalized) {
+    return false;
+  }
+  return PRICE_SEGMENT_REGEX.test(normalized) || PRICE_TEXT_REGEX.test(normalized);
+}
+
+function parseDelimitedParts(parts: string[]) {
+  const [rawName, ...rest] = parts;
+  const name = cleanName(rawName);
+
+  if (!rest.length) {
+    return { name };
+  }
+
+  const priceIndex = rest.findIndex((segment) => isPriceSegment(segment));
+
+  if (priceIndex === -1) {
+    const descriptionOnly = rest.map(cleanText).filter(Boolean).join(" | ") || undefined;
+    return { name, description: descriptionOnly };
+  }
+
+  const price = cleanText(rest[priceIndex]);
+  const descriptionParts = [
+    ...rest.slice(0, priceIndex),
+    ...rest.slice(priceIndex + 1),
+  ]
+    .map(cleanText)
+    .filter(Boolean);
+
+  const description = descriptionParts.length ? descriptionParts.join(" | ") : undefined;
+
+  return { name, price, description };
+}
+
 function parsePlainTextItems(rawItems: string, categoryKey: string): ParsedMenuItem[] {
   const lines = rawItems
-    .split(/\n+/)
-    .map((line) => line.trim())
+    .split(/\r?\n+/)
+    .map((line) => cleanText(line))
     .filter(Boolean);
 
   const items: ParsedMenuItem[] = [];
 
-  lines.forEach((line, index) => {
-    const partsByPipe = line.split("|").map((part) => part.trim()).filter(Boolean);
-    const parts = partsByPipe.length > 1
-      ? partsByPipe
-      : line.split("\t").map((part) => part.trim()).filter(Boolean);
+  let index = 0;
 
-    if (parts.length === 0) {
-      return;
+  while (index < lines.length) {
+    const line = lines[index];
+    if (!line) {
+      index += 1;
+      continue;
     }
 
-    if (parts.length === 1) {
-      const priceMatch = parts[0].match(/(£?\d[\d.,]*)$/);
-      if (priceMatch) {
-        const priceStart = priceMatch.index ?? parts[0].length;
-        const name = parts[0].slice(0, priceStart).trim();
-        const price = priceMatch[0];
-        items.push({
-          key: `${categoryKey}-raw-${index}`,
-          name: name || parts[0],
-          price,
-          dietary: [],
-        });
-        return;
+    const partsByPipe = line.split("|").map((part) => cleanText(part)).filter(Boolean);
+    const partsByTab = line.split("\t").map((part) => cleanText(part)).filter(Boolean);
+    const parts = partsByPipe.length > 1 ? partsByPipe : partsByTab;
+
+    let name = "";
+    let price: string | undefined;
+    let description: string | undefined;
+    let consumed = 0;
+
+    if (parts.length > 1) {
+      const parsed = parseDelimitedParts(parts);
+      name = parsed.name;
+      price = parsed.price;
+      description = parsed.description;
+    } else {
+      const trailingPriceMatch = line.match(/(£|\$|€)?\s?\d[\d.,]*(?:\s?(?:pp|per|each))?$/i);
+      if (trailingPriceMatch) {
+        const match = trailingPriceMatch[0];
+        const priceStart = trailingPriceMatch.index ?? line.length - match.length;
+        name = cleanName(line.slice(0, priceStart));
+        price = cleanText(match);
+      } else {
+        name = cleanName(line);
       }
 
-      items.push({
-        key: `${categoryKey}-raw-${index}`,
-        name: parts[0],
-        dietary: [],
-      });
-      return;
+      if (!price) {
+        const next = lines[index + 1];
+        const nextNext = lines[index + 2];
+
+        if (next && nextNext && isPriceSegment(nextNext)) {
+          // Handle Google copy pattern: name, description, then price.
+          description = cleanText(next);
+          price = cleanText(nextNext);
+          consumed = 2;
+        } else if (next && isPriceSegment(next)) {
+          price = cleanText(next);
+          consumed = 1;
+        }
+      }
     }
 
-    const [name, price, ...rest] = parts;
-    const description = rest.length > 0 ? rest.join(" | ") : undefined;
+    if (description && price && isPriceSegment(description)) {
+      // Handle edge case where description mistakenly captured a price string.
+      price = description;
+      description = undefined;
+    }
 
-    items.push({
-      key: `${categoryKey}-raw-${index}`,
-      name,
-      price,
-      description,
-      dietary: [],
-    });
-  });
+    if (name) {
+      items.push({
+        key: `${categoryKey}-raw-${index}`,
+        name,
+        price,
+        description,
+        dietary: [],
+      });
+    }
+
+    index += consumed + 1;
+  }
 
   return items;
 }
@@ -422,9 +508,13 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
     title,
     intro,
     accordionBehaviour,
+    headingAlignment,
     appearance,
     categories: rawCategories,
   } = props;
+
+  const resolvedHeadingAlignment = headingAlignment === "center" ? "center" : "left";
+  const isHeadingCentered = resolvedHeadingAlignment === "center";
 
   const backgroundVariant =
     toColorVariant(appearance?.backgroundColor) ?? "background";
@@ -438,32 +528,69 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
   const panelForeground = colorVar(panelVariant, { foreground: true });
   const accentColor = colorVar(accentVariant);
   const accentForeground = colorVar(accentVariant, { foreground: true });
+  const headingVariant = toColorVariant(appearance?.headingColor);
+  const headingColor = headingVariant ? colorVar(headingVariant) : backgroundForeground;
+  const tabVariant = toColorVariant(appearance?.tabColor);
+  const tabVariantDark = toColorVariant(appearance?.tabColorDark);
+  const categoryVariant = toColorVariant(appearance?.categoryColor);
+  const categoryVariantDark = toColorVariant(appearance?.categoryColorDark);
+
+  const navBaseColor = tabVariant
+    ? colorVar(tabVariant)
+    : `color-mix(in srgb, ${panelForeground} 65%, ${backgroundForeground} 35%)`;
+  const navActiveColor = tabVariant ? colorVar(tabVariant) : accentColor;
+  const navBaseColorDark = tabVariantDark ? colorVar(tabVariantDark) : navBaseColor;
+  const navActiveColorDark = tabVariantDark ? colorVar(tabVariantDark) : navActiveColor;
+
+  const categoryTitleColor = categoryVariant ? colorVar(categoryVariant) : backgroundForeground;
+  const categoryTitleActiveColor = categoryVariant ? colorVar(categoryVariant) : accentColor;
+  const categoryTitleColorDark = categoryVariantDark
+    ? colorVar(categoryVariantDark)
+    : categoryTitleColor;
+  const categoryTitleActiveColorDark = categoryVariantDark
+    ? colorVar(categoryVariantDark)
+    : categoryTitleActiveColor;
 
   const paletteStyle = useMemo<CSSProperties>(
     () => ({
       color: "var(--menu-headline)",
-      "--menu-headline": backgroundForeground,
+      "--menu-headline": headingColor,
       "--menu-muted": `color-mix(in srgb, ${panelForeground} 60%, ${backgroundForeground} 40%)`,
       "--menu-border-color": `color-mix(in srgb, ${panelColor} 74%, ${accentColor} 26%)`,
       "--menu-surface": panelColor,
       "--menu-surface-foreground": panelForeground,
       "--menu-surface-hover": `color-mix(in srgb, ${accentColor} 12%, ${panelColor} 88%)`,
       "--menu-shell-bg": `color-mix(in srgb, ${panelColor} 24%, ${backgroundColor} 76%)`,
-      "--menu-nav-base": `color-mix(in srgb, ${panelForeground} 65%, ${backgroundForeground} 35%)`,
-      "--menu-nav-active": accentColor,
+      "--menu-nav-base": navBaseColor,
+      "--menu-nav-active": navActiveColor,
+      "--menu-nav-base-dark": navBaseColorDark,
+      "--menu-nav-active-dark": navActiveColorDark,
       "--menu-active-bg": `color-mix(in srgb, ${accentColor} 18%, ${panelColor} 82%)`,
       "--menu-badge-bg": `color-mix(in srgb, ${accentColor} 20%, ${panelColor} 80%)`,
       "--menu-badge-text": accentForeground,
       "--menu-price": `color-mix(in srgb, ${accentColor} 45%, ${panelForeground} 55%)`,
       "--menu-background": backgroundColor,
+      "--menu-category-title": categoryTitleColor,
+      "--menu-category-title-active": categoryTitleActiveColor,
+      "--menu-category-title-dark": categoryTitleColorDark,
+      "--menu-category-title-active-dark": categoryTitleActiveColorDark,
     }),
     [
       accentColor,
       accentForeground,
       backgroundColor,
       backgroundForeground,
+      headingColor,
+      categoryTitleActiveColor,
+      categoryTitleColor,
+      categoryTitleActiveColorDark,
+      categoryTitleColorDark,
       panelColor,
       panelForeground,
+      navActiveColor,
+      navBaseColor,
+      navActiveColorDark,
+      navBaseColorDark,
     ]
   );
 
@@ -562,9 +689,14 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
         style={paletteStyle}
       >
         {hasHeadingContent ? (
-          <header className="flex flex-col gap-4">
+          <header className={cn("flex flex-col gap-4", isHeadingCentered && "items-center text-center")}>
             {eyebrow ? (
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[color:var(--menu-muted)]">
+              <p
+                className={cn(
+                  "text-xs font-semibold uppercase tracking-[0.35em] text-[color:var(--menu-muted)]",
+                  isHeadingCentered && "mx-auto"
+                )}
+              >
                 {stegaClean(eyebrow)}
               </p>
             ) : null}
@@ -574,7 +706,12 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
               </h2>
             ) : null}
             {intro ? (
-              <p className="max-w-2xl text-base text-[color:var(--menu-muted)] sm:text-lg">
+              <p
+                className={cn(
+                  "max-w-2xl text-base text-[color:var(--menu-muted)] sm:text-lg",
+                  isHeadingCentered && "mx-auto"
+                )}
+              >
                 {stegaClean(intro)}
               </p>
             ) : null}
@@ -587,7 +724,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="gap-2 rounded-full border border-[color:var(--menu-border-color)] bg-transparent px-3 py-2 text-sm font-medium text-[color:var(--menu-nav-base)] transition-colors hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2"
+                  className="gap-2 rounded-full border border-[color:var(--menu-border-color)] bg-transparent px-3 py-2 text-sm font-medium text-[color:var(--menu-nav-base)] transition-colors hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2 dark:text-[color:var(--menu-nav-base-dark)] dark:hover:text-[color:var(--menu-nav-active-dark)] dark:focus-visible:ring-[color:var(--menu-nav-active-dark)]"
                 >
                   <MenuIcon className="size-4" />
                   <span>{title ? stegaClean(title) : "Menu"}</span>
@@ -618,9 +755,9 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                         onClick={() => handleNavClick(category.slug)}
                         className={cn(
                           "rounded-md px-3 py-2 text-left text-sm font-medium transition-colors",
-                          "text-[color:var(--menu-nav-base)] hover:bg-[color:var(--menu-active-bg)] hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2",
+                          "text-[color:var(--menu-nav-base)] hover:bg-[color:var(--menu-active-bg)] hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2 dark:text-[color:var(--menu-nav-base-dark)] dark:hover:text-[color:var(--menu-nav-active-dark)] dark:focus-visible:ring-[color:var(--menu-nav-active-dark)]",
                           activeCategory === category.slug &&
-                            "bg-[color:var(--menu-active-bg)] text-[color:var(--menu-nav-active)]"
+                            "bg-[color:var(--menu-active-bg)] text-[color:var(--menu-nav-active)] dark:text-[color:var(--menu-nav-active-dark)]"
                         )}
                       >
                         {category.title}
@@ -633,7 +770,6 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
 
             <div className="flex-1 overflow-hidden">
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-[color:var(--menu-headline)] to-transparent opacity-40" />
                 <nav className="scrollbar-thin flex gap-4 overflow-x-auto pb-1 pr-6" aria-label="Menu categories">
                   {parsedCategories.map((category) => (
                     <button
@@ -645,9 +781,9 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                       onClick={() => handleNavClick(category.slug)}
                       className={cn(
                         "relative flex-shrink-0 scroll-mx-4 whitespace-nowrap border-b-2 border-transparent pb-2 text-sm font-medium transition-colors",
-                        "text-[color:var(--menu-nav-base)] hover:text-[color:var(--menu-nav-active)]",
+                        "text-[color:var(--menu-nav-base)] hover:text-[color:var(--menu-nav-active)] dark:text-[color:var(--menu-nav-base-dark)] dark:hover:text-[color:var(--menu-nav-active-dark)]",
                         activeCategory === category.slug &&
-                          "border-b-[3px] border-[color:var(--menu-nav-active)] text-[color:var(--menu-nav-active)]"
+                          "border-b-[3px] border-[color:var(--menu-nav-active)] text-[color:var(--menu-nav-active)] dark:border-[color:var(--menu-nav-active-dark)] dark:text-[color:var(--menu-nav-active-dark)]"
                       )}
                       data-active={activeCategory === category.slug}
                     >
@@ -670,10 +806,10 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                   }}
                   onClick={() => handleNavClick(category.slug)}
                   className={cn(
-                    "relative whitespace-nowrap border-b-2 border-transparent pb-2 text-sm font-medium transition-colors",
-                    "text-[color:var(--menu-nav-base)] hover:text-[color:var(--menu-nav-active)]",
+                    "relative whitespace-nowrap border-b-2 border-transparent pb-2 text-md font-medium transition-colors",
+                    "text-[color:var(--menu-nav-base)] hover:text-[color:var(--menu-nav-active)] dark:text-[color:var(--menu-nav-base-dark)] dark:hover:text-[color:var(--menu-nav-active-dark)]",
                     activeCategory === category.slug &&
-                      "border-b-[3px] border-[color:var(--menu-nav-active)] text-[color:var(--menu-nav-active)]"
+                      "border-b-[3px] border-[color:var(--menu-nav-active)] text-[color:var(--menu-nav-active)] dark:border-[color:var(--menu-nav-active-dark)] dark:text-[color:var(--menu-nav-active-dark)]"
                   )}
                   data-active={activeCategory === category.slug}
                 >
@@ -687,7 +823,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="gap-2 rounded-full border border-[color:var(--menu-border-color)] bg-transparent px-3 py-2 text-sm font-medium text-[color:var(--menu-nav-base)] transition-colors hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2"
+                    className="gap-2 rounded-full border border-[color:var(--menu-border-color)] bg-transparent px-3 py-2 text-sm font-medium text-[color:var(--menu-nav-base)] transition-colors hover:text-[color:var(--menu-nav-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--menu-nav-active)] focus-visible:ring-offset-2 dark:text-[color:var(--menu-nav-base-dark)] dark:hover:text-[color:var(--menu-nav-active-dark)] dark:focus-visible:ring-[color:var(--menu-nav-active-dark)]"
                   >
                     More
                     <MoreHorizontal className="size-4" />
@@ -700,7 +836,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                   {overflowTabs.map((category) => (
                     <DropdownMenuItem
                       key={`${category.key}-overflow`}
-                      className="text-[color:var(--menu-surface-foreground)] focus:bg-[color:var(--menu-active-bg)] focus:text-[color:var(--menu-nav-active)]"
+                      className="text-[color:var(--menu-surface-foreground)] focus:bg-[color:var(--menu-active-bg)] focus:text-[color:var(--menu-nav-active)] dark:text-[color:var(--menu-surface-foreground)] dark:focus:text-[color:var(--menu-nav-active-dark)]"
                       onSelect={(event) => {
                         event.preventDefault();
                         handleNavClick(category.slug);
@@ -730,8 +866,9 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
               <AccordionTrigger
                 className={cn(
                   "gap-4 rounded-none border-none px-6 text-left text-base font-semibold transition-colors",
-                  "text-[color:var(--menu-headline)] hover:text-[color:var(--menu-nav-active)]",
-                  activeCategory === category.slug && "text-[color:var(--menu-nav-active)]"
+                  "text-[color:var(--menu-category-title)] hover:text-[color:var(--menu-category-title-active)] dark:text-[color:var(--menu-category-title-dark)] dark:hover:text-[color:var(--menu-category-title-active-dark)]",
+                  activeCategory === category.slug &&
+                    "text-[color:var(--menu-category-title-active)] dark:text-[color:var(--menu-category-title-active-dark)]"
                 )}
                 onClick={() => setActiveCategory(category.slug)}
               >

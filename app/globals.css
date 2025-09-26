@@ -176,6 +176,8 @@
 
   --white: #ffffff;
   --white-foreground: #111827;
+  --black: #0b1120;
+  --black-foreground: #f8fafc;
   --light-gray: #f5f5f5;
   --light-gray-foreground: #111827;
   --cool-gray: #e5e7eb;
@@ -238,6 +240,8 @@
 
   --white: #f8fafc;
   --white-foreground: #0b1120;
+  --black: #000000;
+  --black-foreground: #f8fafc;
   --light-gray: #1f2636;
   --light-gray-foreground: #e2e8f0;
   --cool-gray: #27394b;
@@ -289,6 +293,8 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-white: var(--white);
   --color-white-foreground: var(--white-foreground);
+  --color-black: var(--black);
+  --color-black-foreground: var(--black-foreground);
   --color-light-gray: var(--light-gray);
   --color-light-gray-foreground: var(--light-gray-foreground);
   --color-cool-gray: var(--cool-gray);

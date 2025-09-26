@@ -80,6 +80,21 @@ export default defineType({
       initialValue: "expanded",
     }),
     defineField({
+      name: "headingAlignment",
+      type: "string",
+      title: "Heading alignment",
+      description: "Switch to centre align the section heading and intro copy.",
+      group: "display",
+      options: {
+        list: [
+          { title: "Left align", value: "left" },
+          { title: "Centre align", value: "center" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "left",
+    }),
+    defineField({
       name: "appearance",
       type: "object",
       title: "Appearance",
@@ -106,6 +121,36 @@ export default defineType({
           title: "Accent color",
           description: "Highlights active tabs, prices, and badges.",
           initialValue: "primary",
+        }),
+        defineField({
+          name: "headingColor",
+          type: "color-variant",
+          title: "Heading text color",
+          description: "Overrides the section title color.",
+        }),
+        defineField({
+          name: "tabColor",
+          type: "color-variant",
+          title: "Tab text color",
+          description: "Overrides the color of menu navigation tabs.",
+        }),
+        defineField({
+          name: "tabColorDark",
+          type: "color-variant",
+          title: "Tab text color (dark mode)",
+          description: "Optional override applied when the site is viewed in dark mode.",
+        }),
+        defineField({
+          name: "categoryColor",
+          type: "color-variant",
+          title: "Category heading color",
+          description: "Sets the color used for each accordion category title.",
+        }),
+        defineField({
+          name: "categoryColorDark",
+          type: "color-variant",
+          title: "Category heading color (dark mode)",
+          description: "Optional override for category titles in dark mode.",
         }),
       ],
     }),
@@ -211,7 +256,7 @@ export default defineType({
               rows: 12,
               title: "Plain text items",
               description:
-                "Paste lines like `Espresso | 2.80 | Optional note`. One item per line.",
+                "Paste `Name | Price | Optional description`, or three Google lines (name, description, price) per item.",
               hidden: ({ parent }) => {
                 const mode = (parent as { itemEntryMode?: string } | undefined)?.itemEntryMode;
                 return mode !== "text";

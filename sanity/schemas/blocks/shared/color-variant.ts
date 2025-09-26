@@ -10,6 +10,7 @@ export const COLOR_VARIANTS = [
   { title: "Destructive", value: "destructive" },
   { title: "Muted", value: "muted" },
   { title: "White", value: "white" },
+  { title: "Black", value: "black" },
   { title: "Light Gray", value: "light-gray" },
   { title: "Cool Gray", value: "cool-gray" },
   { title: "Soft Blue", value: "soft-blue" },
