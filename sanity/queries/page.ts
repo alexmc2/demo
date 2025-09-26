@@ -19,6 +19,7 @@ import { formContactMapQuery } from "./forms/contact-map";
 import { locationMapQuery } from "./location/location-map";
 import { allPostsQuery } from "./all-posts";
 import { menuSectionQuery } from "./menu-section";
+import { menuGoogleSectionQuery } from "./menu-google-section";
 import { lottieAnimationQuery } from "./lottie-animation";
 
 export const PAGE_QUERY = groq`
@@ -44,6 +45,7 @@ export const PAGE_QUERY = groq`
       ${locationMapQuery},
       ${allPostsQuery},
       ${menuSectionQuery},
+      ${menuGoogleSectionQuery},
     },
     meta_title,
     meta_description,

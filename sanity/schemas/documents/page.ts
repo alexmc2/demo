@@ -46,6 +46,7 @@ export default defineType({
         { type: "section-header" },
         { type: "lottie-animation" },
         { type: "menu-section" },
+        { type: "menu-google-section" },
         { type: "split-row" },
         { type: "grid-row" },
         { type: "carousel-1" },
@@ -86,7 +87,7 @@ export default defineType({
             {
               name: "menu",
               title: "Menu",
-              of: ["menu-section"],
+              of: ["menu-section", "menu-google-section"],
             },
             {
               name: "grid",

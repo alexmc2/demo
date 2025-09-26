@@ -1,16 +1,16 @@
 // components/blocks/hero/hero-1.tsx
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
-import { stegaClean } from "next-sanity";
-import PortableTextRenderer from "@/components/portable-text-renderer";
-import { FadeIn } from "@/components/ui/fade.in";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import Image from 'next/image';
+import { urlFor } from '@/sanity/lib/image';
+import { stegaClean } from 'next-sanity';
+import PortableTextRenderer from '@/components/portable-text-renderer';
+import { FadeIn } from '@/components/ui/fade-in';
+import { PAGE_QUERYResult } from '@/sanity.types';
 
 type Hero1Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
-  { _type: "hero-1" }
+  NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number],
+  { _type: 'hero-1' }
 >;
 
 export default function Hero1({
@@ -27,13 +27,15 @@ export default function Hero1({
     dimensions?.width && dimensions?.height
       ? dimensions.width / dimensions.height
       : undefined;
-  const targetHeight = aspectRatio ? Math.round(targetWidth / aspectRatio) : undefined;
+  const targetHeight = aspectRatio
+    ? Math.round(targetWidth / aspectRatio)
+    : undefined;
 
   let heroImageUrl: string | undefined;
   if (image?.asset?._id) {
     const heroImageBuilder = urlFor(image)
       .width(targetWidth)
-      .fit("max")
+      .fit('max')
       .quality(85);
 
     heroImageUrl = targetHeight
@@ -65,11 +67,7 @@ export default function Hero1({
             </FadeIn>
           )}
           {links && links.length > 0 && (
-            <FadeIn
-              delay={420}
-              className="mt-10 flex flex-wrap gap-4"
-              as="div"
-            >
+            <FadeIn delay={420} className="mt-10 flex flex-wrap gap-4" as="div">
               {links.map((link) => (
                 <Button
                   key={link.title}
@@ -77,9 +75,9 @@ export default function Hero1({
                   asChild
                 >
                   <Link
-                    href={link.href || "#"}
-                    target={link.target ? "_blank" : undefined}
-                    rel={link.target ? "noopener" : undefined}
+                    href={link.href || '#'}
+                    target={link.target ? '_blank' : undefined}
+                    rel={link.target ? 'noopener' : undefined}
                   >
                     {link.title}
                   </Link>
@@ -94,14 +92,14 @@ export default function Hero1({
               <Image
                 className="rounded-xl"
                 src={heroImageUrl}
-                alt={image.alt || ""}
+                alt={image.alt || ''}
                 width={targetWidth}
                 height={targetHeight ?? dimensions?.height ?? 800}
                 priority
                 fetchPriority="high"
                 sizes="(min-width: 1024px) 42vw, 92vw"
-                placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
-                blurDataURL={image?.asset?.metadata?.lqip || ""}
+                placeholder={image?.asset?.metadata?.lqip ? 'blur' : undefined}
+                blurDataURL={image?.asset?.metadata?.lqip || ''}
               />
             </FadeIn>
           )}

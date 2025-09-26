@@ -10,10 +10,16 @@ export const COLOR_VARIANTS = [
   { title: "Destructive", value: "destructive" },
   { title: "Muted", value: "muted" },
   { title: "White", value: "white" },
-  { title: "Warm Cream", value: "cream" },
-  { title: "Dark Espresso", value: "espresso" },
-  { title: "Herbal Sage", value: "sage" },
-  { title: "Soft Charcoal", value: "charcoal" },
+  { title: "Light Gray", value: "light-gray" },
+  { title: "Cool Gray", value: "cool-gray" },
+  { title: "Soft Blue", value: "soft-blue" },
+  { title: "Sky Blue", value: "sky-blue" },
+  { title: "Mint", value: "mint" },
+  { title: "Sand", value: "sand" },
+  { title: "Peach", value: "peach" },
+  { title: "Slate", value: "slate" },
+  { title: "Navy", value: "navy" },
+  { title: "Charcoal", value: "charcoal" },
 ];
 
 export const colorVariant = defineType({

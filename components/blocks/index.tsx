@@ -20,6 +20,7 @@ import FormContactMap, { FormContactMapBlock } from "@/components/blocks/forms/c
 import LocationMap, { LocationMapBlock } from "@/components/blocks/location/location-map";
 import AllPosts from "@/components/blocks/all-posts";
 import MenuSection from "@/components/blocks/menu-section";
+import MenuGoogleSection from "@/components/blocks/menu/google-menu-section";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type ExtendedBlock = Block | ContactFormBlock | LocationMapBlock | FormContactMapBlock;
@@ -47,6 +48,7 @@ const componentMap: {
   "location-map": LocationMap,
   "all-posts": AllPosts,
   "menu-section": MenuSection,
+  "menu-google-section": MenuGoogleSection,
 };
 
 export default function Blocks({ blocks }: { blocks: ExtendedBlock[] }) {

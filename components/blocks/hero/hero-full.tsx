@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 import PortableTextRenderer from '@/components/portable-text-renderer';
-import { FadeIn } from '@/components/ui/fade.in';
+import { FadeIn } from '@/components/ui/fade-in';
 import { cn } from '@/lib/utils';
 import { HeroFullCarousel } from './hero-full-carousel';
 
@@ -65,11 +65,7 @@ export default function HeroFull({
     const dimensions = img.asset?.metadata?.dimensions;
     const maxWidth = Math.min(2200, Math.round(dimensions?.width ?? 2200));
 
-    return urlFor(img)
-      .width(maxWidth)
-      .fit('max')
-      .quality(80)
-      .url();
+    return urlFor(img).width(maxWidth).fit('max').quality(80).url();
   };
 
   const primaryHeroImage = heroImages[0];
@@ -91,7 +87,8 @@ export default function HeroFull({
           {heroImages.length > 1 ? (
             <HeroFullCarousel images={heroImages} />
           ) : (
-            primaryHeroImage && primaryHeroImageUrl && (
+            primaryHeroImage &&
+            primaryHeroImageUrl && (
               <div className="relative h-full w-full overflow-hidden animate-zoom-in will-change-transform motion-reduce:animate-none">
                 <Image
                   src={primaryHeroImageUrl}

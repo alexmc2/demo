@@ -1,7 +1,7 @@
 // components/blocks/reviews/reviews-carousel.tsx
-import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
-import { fetchGoogleReviews } from "@/lib/google/reviews";
+import SectionContainer from '@/components/ui/section-container';
+import { stegaClean } from 'next-sanity';
+import { fetchGoogleReviews } from '@/lib/google/reviews';
 import {
   Carousel,
   CarouselContent,
@@ -9,35 +9,36 @@ import {
   CarouselNext,
   CarouselPrevious,
   CarouselDots,
-} from "@/components/ui/carousel";
-import { StarRating } from "@/components/ui/star-rating";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { FadeIn } from "@/components/ui/fade.in";
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { PAGE_QUERYResult } from "@/sanity.types";
-import type { ReviewsSortOrder } from "@/lib/google/reviews";
+} from '@/components/ui/carousel';
+import { StarRating } from '@/components/ui/star-rating';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { FadeIn } from '@/components/ui/fade-in';
+import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { PAGE_QUERYResult } from '@/sanity.types';
+import type { ReviewsSortOrder } from '@/lib/google/reviews';
 
 const INDICATOR_MIN_ITEMS = 2;
 
 const MINIMUM_RATING_MAP: Record<string, number> = {
   any: 0,
-  "3": 3,
-  "4": 4,
-  "5": 5,
+  '3': 3,
+  '4': 4,
+  '5': 5,
 };
 
 const SORT_ORDER_MAP: Record<string, ReviewsSortOrder> = {
-  most_relevant: "most_relevant",
-  newest: "newest",
+  most_relevant: 'most_relevant',
+  newest: 'newest',
 };
 
-type PageBlock = NonNullable<
-  NonNullable<PAGE_QUERYResult>["blocks"]
->[number];
-export type ReviewsCarouselBlock = Extract<PageBlock, { _type: "reviews-carousel" }>;
-type ReviewsCarouselLink = NonNullable<ReviewsCarouselBlock["cta"]>;
+type PageBlock = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+export type ReviewsCarouselBlock = Extract<
+  PageBlock,
+  { _type: 'reviews-carousel' }
+>;
+type ReviewsCarouselLink = NonNullable<ReviewsCarouselBlock['cta']>;
 
 function resolveMinimumRating(raw?: string | null): number | null {
   if (!raw) return null;
@@ -47,9 +48,9 @@ function resolveMinimumRating(raw?: string | null): number | null {
 }
 
 function resolveSortOrder(raw?: string | null): ReviewsSortOrder {
-  if (!raw) return "most_relevant";
+  if (!raw) return 'most_relevant';
   const cleaned = stegaClean(raw);
-  return SORT_ORDER_MAP[cleaned] ?? "most_relevant";
+  return SORT_ORDER_MAP[cleaned] ?? 'most_relevant';
 }
 
 function ReviewCard({
@@ -66,9 +67,9 @@ function ReviewCard({
   avatarUrl?: string;
 }) {
   const displayInitials = authorName
-    .split(" ")
+    .split(' ')
     .map((segment) => segment[0])
-    .join("")
+    .join('')
     .toUpperCase()
     .slice(0, 2);
 
@@ -83,7 +84,7 @@ function ReviewCard({
               referrerPolicy="no-referrer"
             />
           ) : null}
-          <AvatarFallback>{displayInitials || "GG"}</AvatarFallback>
+          <AvatarFallback>{displayInitials || 'GG'}</AvatarFallback>
         </Avatar>
         <div className="space-y-0.5">
           <p className="font-medium text-foreground">{authorName}</p>
@@ -113,7 +114,9 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
   const heading = block.heading ? stegaClean(block.heading) : null;
   const intro = block.intro ? stegaClean(block.intro) : null;
   const placeId = block.placeId ? stegaClean(block.placeId) : null;
-  const languageCode = block.languageCode ? stegaClean(block.languageCode) : null;
+  const languageCode = block.languageCode
+    ? stegaClean(block.languageCode)
+    : null;
 
   const limit = block.maximumReviews ?? undefined;
   const minimumRating = resolveMinimumRating(block.minimumRating);
@@ -130,11 +133,11 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
 
   const cta = block.cta ?? null;
   const ctaHref = cta?.href ? stegaClean(cta.href) : null;
-  const ctaLabel = cta?.title ? stegaClean(cta.title) : "Read more reviews";
-  const ctaTarget = cta?.target ? "_blank" : undefined;
+  const ctaLabel = cta?.title ? stegaClean(cta.title) : 'Read more reviews';
+  const ctaTarget = cta?.target ? '_blank' : undefined;
   const buttonVariant = cta?.buttonVariant
-    ? (stegaClean(cta.buttonVariant) as ReviewsCarouselLink["buttonVariant"])
-    : "default";
+    ? (stegaClean(cta.buttonVariant) as ReviewsCarouselLink['buttonVariant'])
+    : 'default';
 
   const hasCarousel = reviews.length > 0;
 
@@ -175,7 +178,7 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
             delay={240}
             className="flex flex-col items-center gap-4 text-muted-foreground"
           >
-            {typeof averageRating === "number" && averageRating > 0 ? (
+            {typeof averageRating === 'number' && averageRating > 0 ? (
               <div className="flex flex-col items-center gap-1">
                 <div className="flex items-center justify-center gap-4">
                   <StarRating rating={averageRating} size="lg" />
@@ -184,12 +187,16 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
                   </span>
                 </div>
                 <p className="text-sm">
-                  {userRatingCount ? `${userRatingCount} Google reviews` : "Google reviews"}
+                  {userRatingCount
+                    ? `${userRatingCount} Google reviews`
+                    : 'Google reviews'}
                   {placeName ? ` · ${placeName}` : null}
                 </p>
               </div>
             ) : null}
-            {intro ? <p className="max-w-2xl text-base leading-relaxed">{intro}</p> : null}
+            {intro ? (
+              <p className="max-w-2xl text-base leading-relaxed">{intro}</p>
+            ) : null}
           </FadeIn>
         </div>
 
@@ -214,11 +221,11 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
                   <CarouselItem
                     key={review.id}
                     className={cn(
-                      "basis-full pl-0",
+                      'basis-full pl-0',
                       reviews.length > 1
-                        ? "md:basis-1/2 lg:basis-1/3"
+                        ? 'md:basis-1/2 lg:basis-1/3'
                         : undefined,
-                      "flex"
+                      'flex'
                     )}
                   >
                     <ReviewCard
@@ -254,14 +261,11 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
 
         {ctaHref ? (
           <FadeIn as="div" delay={420} className="flex justify-center">
-            <Button
-              asChild
-              variant={buttonVariant ?? "default"}
-            >
+            <Button asChild variant={buttonVariant ?? 'default'}>
               <Link
                 href={ctaHref}
                 target={ctaTarget}
-                rel={ctaTarget === "_blank" ? "noreferrer" : undefined}
+                rel={ctaTarget === '_blank' ? 'noreferrer' : undefined}
               >
                 {ctaLabel}
               </Link>

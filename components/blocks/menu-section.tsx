@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { stegaClean } from 'next-sanity';
 import { cn } from '@/lib/utils';
 import SectionContainer from '@/components/ui/section-container';
-import { FadeIn } from '@/components/ui/fade.in';
+import { FadeIn } from '@/components/ui/fade-in';
 import { urlFor } from '@/sanity/lib/image';
 import type { PAGE_QUERYResult, ColorVariant } from '@/sanity.types';
 import type { CSSProperties } from 'react';

@@ -45,6 +45,7 @@ import contactMap from "./schemas/blocks/forms/contact-map";
 import locationMap from "./schemas/blocks/location/location-map";
 import allPosts from "./schemas/blocks/all-posts";
 import menuSection from "./schemas/blocks/menu-section";
+import menuGoogleSection from "./schemas/blocks/menu-google-section";
 import lottieAnimation from "./schemas/blocks/lottie-animation";
 import reviewsCarousel from "./schemas/blocks/reviews/reviews-carousel";
 
@@ -94,6 +95,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     locationMap,
     allPosts,
     menuSection,
+    menuGoogleSection,
     lottieAnimation,
     reviewsCarousel,
   ],

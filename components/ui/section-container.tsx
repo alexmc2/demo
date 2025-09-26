@@ -11,9 +11,15 @@ const BACKGROUND_CLASS_MAP = {
   destructive: "bg-destructive",
   muted: "bg-muted",
   white: "bg-white",
-  cream: "bg-cream",
-  espresso: "bg-espresso",
-  sage: "bg-sage",
+  "light-gray": "bg-light-gray",
+  "cool-gray": "bg-cool-gray",
+  "soft-blue": "bg-soft-blue",
+  "sky-blue": "bg-sky-blue",
+  mint: "bg-mint",
+  sand: "bg-sand",
+  peach: "bg-peach",
+  slate: "bg-slate",
+  navy: "bg-navy",
   charcoal: "bg-charcoal",
 } as const satisfies Record<ColorVariant, string>;
 
