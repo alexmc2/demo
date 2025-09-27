@@ -9,17 +9,34 @@ import { fontBody, fontHeading, fontSans } from '@/lib/fonts';
 import { projectId } from '@/sanity/env';
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === 'production';
+const fallbackSiteUrl = 'http://localhost:3000';
+
+const metadataBase = (() => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  try {
+    return new URL(siteUrl ?? fallbackSiteUrl);
+  } catch {
+    return new URL(fallbackSiteUrl);
+  }
+})();
+
+const defaultDescription =
+  'Schema UI Starter is a Sanity-powered marketing site built with the Next.js App Router.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+  metadataBase,
   title: {
     template: '%s | Schema UI Starter',
     default: 'Sanity Next.js Website | Schema UI Starter',
   },
+  description: defaultDescription,
   openGraph: {
+    title: 'Sanity Next.js Website | Schema UI Starter',
+    description: defaultDescription,
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
+        url: `${metadataBase.origin}/images/og-image.jpg`,
         width: 1200,
         height: 630,
       },

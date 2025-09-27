@@ -67,10 +67,11 @@ export default function PricingCard({
           asChild
         >
           <Link
-            href={link?.href ? link.href : '#'}
+            href={link?.href ? stegaClean(link.href) : '#'}
             target={link?.target ? '_blank' : undefined}
+            rel={link?.target ? 'noopener noreferrer' : undefined}
           >
-            {link?.title}
+            {stegaClean(link?.title) || 'Learn more'}
           </Link>
         </Button>
       </div>

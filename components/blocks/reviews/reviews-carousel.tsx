@@ -265,8 +265,10 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
               <Link
                 href={ctaHref}
                 target={ctaTarget}
-                rel={ctaTarget === '_blank' ? 'noreferrer' : undefined}
-              ></Link>
+                rel={ctaTarget === '_blank' ? 'noopener noreferrer' : undefined}
+              >
+                {ctaLabel}
+              </Link>
             </Button>
           </FadeIn>
         ) : null}

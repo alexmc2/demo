@@ -54,21 +54,28 @@ export default function Cta1({
           >
             {links &&
               links.length > 0 &&
-              links.map((link) => (
-                <Button
-                  key={link.title}
-                  variant={stegaClean(link?.buttonVariant)}
-                  asChild
-                >
-                  <Link
-                    href={link.href || '#'}
-                    target={link.target ? '_blank' : undefined}
-                    rel={link.target ? 'noopener' : undefined}
+              links.map((link, index) => {
+                const linkKey = link._key ?? `${link.href ?? 'cta'}-${index}`;
+                const href = link.href ? stegaClean(link.href) : '#';
+                const label = stegaClean(link.title) || 'Learn more';
+                const target = link.target ? '_blank' : undefined;
+
+                return (
+                  <Button
+                    key={linkKey}
+                    variant={stegaClean(link?.buttonVariant)}
+                    asChild
                   >
-                    {link.title}
-                  </Link>
-                </Button>
-              ))}
+                    <Link
+                      href={href}
+                      target={target}
+                      rel={target ? 'noopener noreferrer' : undefined}
+                    >
+                      {label}
+                    </Link>
+                  </Button>
+                );
+              })}
           </div>
         )}
       </div>
