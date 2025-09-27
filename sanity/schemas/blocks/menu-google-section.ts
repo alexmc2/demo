@@ -109,11 +109,23 @@ export default defineType({
           initialValue: "background",
         }),
         defineField({
+          name: "backgroundColorDark",
+          type: "color-variant",
+          title: "Background color (dark mode)",
+          description: "Optional override applied when viewed in dark mode.",
+        }),
+        defineField({
           name: "panelColor",
           type: "color-variant",
           title: "Panel color",
           description: "Controls the menu card background.",
           initialValue: "card",
+        }),
+        defineField({
+          name: "panelColorDark",
+          type: "color-variant",
+          title: "Panel color (dark mode)",
+          description: "Optional override for the menu card background in dark mode.",
         }),
         defineField({
           name: "accentColor",
@@ -123,10 +135,22 @@ export default defineType({
           initialValue: "primary",
         }),
         defineField({
+          name: "accentColorDark",
+          type: "color-variant",
+          title: "Accent color (dark mode)",
+          description: "Optional override for highlight colors in dark mode.",
+        }),
+        defineField({
           name: "headingColor",
           type: "color-variant",
           title: "Heading text color",
           description: "Overrides the section title color.",
+        }),
+        defineField({
+          name: "headingColorDark",
+          type: "color-variant",
+          title: "Heading text color (dark mode)",
+          description: "Optional override for the section title in dark mode.",
         }),
         defineField({
           name: "tabColor",
@@ -151,6 +175,18 @@ export default defineType({
           type: "color-variant",
           title: "Category heading color (dark mode)",
           description: "Optional override for category titles in dark mode.",
+        }),
+        defineField({
+          name: "borderColor",
+          type: "color-variant",
+          title: "Border color",
+          description: "Sets the border color used across the menu shell and controls.",
+        }),
+        defineField({
+          name: "borderColorDark",
+          type: "color-variant",
+          title: "Border color (dark mode)",
+          description: "Optional override for borders when the site is viewed in dark mode.",
         }),
       ],
     }),

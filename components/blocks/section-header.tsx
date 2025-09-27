@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import SectionContainer from '@/components/ui/section-container';
 import { stegaClean } from 'next-sanity';
 
-import { FadeIn } from '@/components/ui/fade-in';
+import { FadeIn } from '@/components/ui/fade.in';
 import { PAGE_QUERYResult } from '@/sanity.types';
 
 type SectionHeaderProps = Extract<

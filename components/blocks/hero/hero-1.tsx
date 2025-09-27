@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 import { stegaClean } from 'next-sanity';
 import PortableTextRenderer from '@/components/portable-text-renderer';
-import { FadeIn } from '@/components/ui/fade-in';
+import { FadeIn } from '@/components/ui/fade.in';
 import { PAGE_QUERYResult } from '@/sanity.types';
 
 type Hero1Props = Extract<

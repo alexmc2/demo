@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 import PortableTextRenderer from '@/components/portable-text-renderer';
-import { FadeIn } from '@/components/ui/fade-in';
+import { FadeIn } from '@/components/ui/fade.in';
 import { cn } from '@/lib/utils';
 import { HeroFullCarousel } from './hero-full-carousel';
 

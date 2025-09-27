@@ -21,7 +21,7 @@ export default function PostCard({
   return (
     <div
       className={cn(
-        'group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border/60 bg-white shadow-sm p-5 transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/10 hover:bg-background/70 hover:shadow-lg',
+        'group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border/60 bg-white shadow-sm p-5 transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/10 hover:bg-background/70 hover:shadow-lg dark:border-border dark:bg-background/80 dark:text-foreground dark:hover:bg-background/60',
         className
       )}
     >
@@ -48,11 +48,11 @@ export default function PostCard({
           </time>
         )}
         {title && (
-          <h3 className={cn('text-xl font-semibold leading-snug')}>{title}</h3>
+          <h3 className={cn('text-xl font-semibold leading-snug text-foreground dark:text-foreground')}>{title}</h3>
         )}
         {excerpt && (
           <p
-            className="text-sm text-muted-foreground"
+            className="text-sm text-muted-foreground "
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 3,

@@ -51,6 +51,7 @@ interface SectionContainerProps {
   children: React.ReactNode;
   className?: string;
   id?: string | null;
+  style?: React.CSSProperties;
 }
 
 export default function SectionContainer({
@@ -59,6 +60,7 @@ export default function SectionContainer({
   children,
   className,
   id,
+  style,
 }: SectionContainerProps) {
   const backgroundClass = BACKGROUND_CLASS_MAP[color ?? "background"] ?? "bg-background";
 
@@ -73,6 +75,7 @@ export default function SectionContainer({
         padding?.bottom ? "pb-16 xl:pb-20" : undefined,
         className
       )}
+      style={style}
     >
       <div className="container">{children}</div>
     </div>

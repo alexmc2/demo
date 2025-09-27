@@ -13,7 +13,7 @@ import {
 import { StarRating } from '@/components/ui/star-rating';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { FadeIn } from '@/components/ui/fade-in';
+import { FadeIn } from '@/components/ui/fade.in';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { PAGE_QUERYResult } from '@/sanity.types';

@@ -15,13 +15,19 @@ export const menuGoogleSectionQuery = groq`
     headingAlignment,
     appearance{
       backgroundColor,
+      backgroundColorDark,
       panelColor,
+      panelColorDark,
       accentColor,
+      accentColorDark,
       headingColor,
+      headingColorDark,
       tabColor,
       tabColorDark,
       categoryColor,
-      categoryColorDark
+      categoryColorDark,
+      borderColor,
+      borderColorDark
     },
     categories[]{
       _key,
