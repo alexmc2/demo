@@ -1,6 +1,6 @@
 // components/404.tsx
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Button } from '@/components/ui/button1';
+import Link from 'next/link';
 
 export default function Custom404() {
   return (

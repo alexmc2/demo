@@ -1,5 +1,5 @@
 // components/blocks/hero/hero-2.tsx
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button1';
 import Link from 'next/link';
 import { stegaClean } from 'next-sanity';
 import PortableTextRenderer from '@/components/portable-text-renderer';

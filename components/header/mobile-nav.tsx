@@ -1,5 +1,5 @@
 // components/header/mobile-nav.tsx
-"use client";
+'use client';
 import {
   Sheet,
   SheetContent,
@@ -7,16 +7,17 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import Logo from "@/components/logo";
-import { useState } from "react";
-import { AlignRight } from "lucide-react";
-import { SETTINGS_QUERYResult, NAVIGATION_QUERYResult } from "@/sanity.types";
+} from '@/components/ui/sheet';
+import { Button, buttonVariants } from '@/components/ui/button1';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import Logo from '@/components/logo';
+import { useState } from 'react';
+import { AlignRight } from 'lucide-react';
+import { SETTINGS_QUERYResult, NAVIGATION_QUERYResult } from '@/sanity.types';
+import { ModeToggle } from '@/components/menu-toggle';
 
-type SanityLink = NonNullable<NAVIGATION_QUERYResult[0]["links"]>[number];
+type SanityLink = NonNullable<NAVIGATION_QUERYResult[0]['links']>[number];
 
 export default function MobileNav({
   navigation,
@@ -39,13 +40,10 @@ export default function MobileNav({
         <Button
           aria-label="Open Menu"
           variant="ghost"
+          size="icon"
           className={cn(
-            // Make the trigger a visible circular target
-            "size-9 rounded-full p-0 ring-1 transition-colors",
-            // Color of icon + outline depends on header background
-            isSolid
-              ? "text-slate-900 ring-slate-900"
-              : "text-white ring-white"
+            'text-inherit shadow-none transition-colors',
+            isSolid ? 'hover:bg-muted/60' : 'hover:bg-white/10'
           )}
         >
           {/* Inherit color from parent so it flips with `isSolid` */}
@@ -54,8 +52,11 @@ export default function MobileNav({
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <div className="mx-auto">
+          <div className="mx-auto pt-12">
             <Logo settings={settings} />
+          </div>
+          <div className="flex justify-center pt-6">
+            <ModeToggle />
           </div>
           <div className="sr-only">
             <SheetTitle>Main Navigation</SheetTitle>
@@ -64,21 +65,21 @@ export default function MobileNav({
         </SheetHeader>
         <div className="pt-10 pb-20">
           <div className="container">
-            <ul className="list-none text-center space-y-3">
+            <ul className="list-none text-center  space-y-3">
               {navigation[0]?.links?.map((navItem: SanityLink) => (
                 <li key={navItem._key}>
                   <Link
                     onClick={() => setOpen(false)}
-                    href={navItem.href || "#"}
+                    href={navItem.href || '#'}
                     prefetch={false}
-                    target={navItem.target ? "_blank" : undefined}
-                    rel={navItem.target ? "noopener noreferrer" : undefined}
+                    target={navItem.target ? '_blank' : undefined}
+                    rel={navItem.target ? 'noopener noreferrer' : undefined}
                     className={cn(
                       buttonVariants({
-                        variant: navItem.buttonVariant || "default",
+                        variant: navItem.buttonVariant || 'default',
                       }),
-                      navItem.buttonVariant === "ghost" &&
-                        "hover:text-decoration-none hover:opacity-50 text-lg p-0 h-auto hover:bg-transparent"
+                      navItem.buttonVariant === 'ghost' &&
+                        'hover:text-decoration-none hover:opacity-50 text-lg p-0 h-auto hover:bg-transparent'
                     )}
                   >
                     {navItem.title}

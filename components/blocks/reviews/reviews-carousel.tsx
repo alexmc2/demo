@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/carousel';
 import { StarRating } from '@/components/ui/star-rating';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button1';
 import { FadeIn } from '@/components/ui/fade.in';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -266,9 +266,7 @@ export default async function ReviewsCarousel(block: ReviewsCarouselBlock) {
                 href={ctaHref}
                 target={ctaTarget}
                 rel={ctaTarget === '_blank' ? 'noreferrer' : undefined}
-              >
-                {ctaLabel}
-              </Link>
+              ></Link>
             </Button>
           </FadeIn>
         ) : null}

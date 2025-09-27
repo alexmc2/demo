@@ -89,6 +89,13 @@ export default function HeaderClient({
   // Force white text when over hero
   const textClass = onHome && overHero ? 'text-white' : 'text-foreground';
 
+  const modeToggleClass = cn(
+    'transition-colors duration-300',
+    onHome && overHero
+      ? 'text-white/90 hover:text-white'
+      : 'text-foreground hover:text-foreground'
+  );
+
   return (
     <>
       <header
@@ -127,17 +134,7 @@ export default function HeaderClient({
               navigation={navigation}
               isSolid={!(onHome && overHero)}
             />
-            {/* Theme toggle temporarily disabled */}
-            
-            <ModeToggle
-              className={cn(
-                'transition-colors duration-300',
-                onHome && overHero
-                  ? 'text-white/90 hover:text-white'
-                  : 'text-foreground hover:text-foreground'
-              )}
-            />
-           
+            <ModeToggle className={modeToggleClass} />
           </div>
 
           <div
@@ -146,17 +143,7 @@ export default function HeaderClient({
               onHome && overHero ? 'text-white' : 'text-foreground'
             )}
           >
-            {/* Theme toggle temporarily disabled */}
-            {/*
-            <ModeToggle
-              className={cn(
-                'transition-colors duration-300',
-                onHome && overHero
-                  ? 'text-white/90 hover:text-white'
-                  : 'text-foreground hover:text-foreground'
-              )}
-            />
-            */}
+            <ModeToggle className={modeToggleClass} />
             <MobileNav
               navigation={navigation}
               settings={settings}

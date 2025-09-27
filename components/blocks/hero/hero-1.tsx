@@ -1,5 +1,5 @@
 // components/blocks/hero/hero-1.tsx
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button1';
 import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';

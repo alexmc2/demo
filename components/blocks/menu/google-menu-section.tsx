@@ -30,7 +30,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button1';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -742,9 +742,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
       ? colorVar(categoryVariant)
       : accentColorDark;
 
-  const borderColor = borderVariant
-    ? colorVar(borderVariant)
-    : '#cbd5e1';
+  const borderColor = borderVariant ? colorVar(borderVariant) : '#cbd5e1';
   const borderColorDark = borderVariantDark
     ? colorVar(borderVariantDark)
     : borderVariant
@@ -1151,7 +1149,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="backdrop-blur-xl border border-[color:var(--menu-border-color)] bg-[color:var(--menu-background)] text-[color:var(--menu-headline)] dark:border-[color:var(--menu-border-color-dark)] dark:bg-[color:var(--menu-background-dark)] dark:text-[color:var(--menu-headline-dark)]"
+                className="backdrop-blur-xl border border-[color:var(--menu-border-color)] bg-background text-[color:var(--menu-headline)] dark:border-[color:var(--menu-border-color-dark)] dark:bg-[color:var(--menu-background-dark)] dark:text-[color:var(--menu-headline-dark)]"
               >
                 <SheetHeader className="border-b border-[color:var(--menu-border-color)] px-4 pb-4 dark:border-[color:var(--menu-border-color-dark)]">
                   <SheetTitle className="text-lg font-semibold text-[color:var(--menu-headline)] dark:text-[color:var(--menu-headline-dark)]">

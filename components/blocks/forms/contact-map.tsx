@@ -1,15 +1,15 @@
 // components/blocks/forms/contact-map.tsx
-"use client";
-import { useCallback, useMemo } from "react";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { stegaClean } from "next-sanity";
+'use client';
+import { useCallback, useMemo } from 'react';
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
+import { stegaClean } from 'next-sanity';
 
-import SectionContainer from "@/components/ui/section-container";
-import { Button } from "@/components/ui/button";
+import SectionContainer from '@/components/ui/section-container';
+import { Button } from '@/components/ui/button1';
 import {
   Form,
   FormControl,
@@ -17,26 +17,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { FormContactMap as SanityFormContactMap } from "@/sanity.types";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { FormContactMap as SanityFormContactMap } from '@/sanity.types';
 
-const GOOGLE_MAPS_EMBED_BASE = "https://www.google.com/maps/embed/v1/place";
+const GOOGLE_MAPS_EMBED_BASE = 'https://www.google.com/maps/embed/v1/place';
 
 const contactFormSchema = z.object({
   name: z.string().min(1, {
-    message: "Please enter your name",
+    message: 'Please enter your name',
   }),
   email: z
     .string()
     .min(1, {
-      message: "Please enter your email",
+      message: 'Please enter your email',
     })
     .email({
-      message: "Please enter a valid email",
+      message: 'Please enter a valid email',
     }),
   message: z.string().min(1, {
-    message: "Please share a message",
+    message: 'Please share a message',
   }),
 });
 
@@ -60,20 +60,20 @@ export default function FormContactMap({
   mapZoom,
 }: FormContactMapBlock) {
   const cleanedColor = colorVariant ? stegaClean(colorVariant) : undefined;
-  const cleanedHeading = cleanString(heading) ?? "Get in touch";
+  const cleanedHeading = cleanString(heading) ?? 'Get in touch';
   const cleanedBody = cleanString(body);
-  const cleanedLocationName = cleanString(locationName) ?? "Our location";
+  const cleanedLocationName = cleanString(locationName) ?? 'Our location';
   const cleanedAddress = cleanString(address);
   const cleanedFormId = cleanString(formspreeFormId);
-  const cleanedSubmitLabel = cleanString(submitButtonLabel) ?? "Send message";
+  const cleanedSubmitLabel = cleanString(submitButtonLabel) ?? 'Send message';
   const cleanedSuccessMessage = cleanString(successMessage);
 
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      message: "",
+      name: '',
+      email: '',
+      message: '',
     },
   });
 
@@ -82,7 +82,11 @@ export default function FormContactMap({
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   const mapSrc = useMemo(() => {
-    if (!googleMapsApiKey || typeof latitude !== "number" || typeof longitude !== "number") {
+    if (
+      !googleMapsApiKey ||
+      typeof latitude !== 'number' ||
+      typeof longitude !== 'number'
+    ) {
       return null;
     }
 
@@ -92,7 +96,7 @@ export default function FormContactMap({
     });
 
     if (mapZoom) {
-      params.set("zoom", String(mapZoom));
+      params.set('zoom', String(mapZoom));
     }
 
     return `${GOOGLE_MAPS_EMBED_BASE}?${params.toString()}`;
@@ -101,31 +105,38 @@ export default function FormContactMap({
   const handleSubmit = useCallback(
     async (values: z.infer<typeof contactFormSchema>) => {
       if (!cleanedFormId) {
-        toast.error("The contact form is not configured yet.");
+        toast.error('The contact form is not configured yet.');
         return;
       }
 
       try {
-        const response = await fetch(`https://formspree.io/f/${cleanedFormId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(values),
-        });
+        const response = await fetch(
+          `https://formspree.io/f/${cleanedFormId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify(values),
+          }
+        );
 
         const result = await response.json();
 
         if (response.ok) {
-          const message = cleanedSuccessMessage || "Your message has been sent.";
+          const message =
+            cleanedSuccessMessage || 'Your message has been sent.';
           toast.success(message);
           form.reset();
         } else {
-          toast.error(result?.errors?.[0]?.message || "Something went wrong. Please try again.");
+          toast.error(
+            result?.errors?.[0]?.message ||
+              'Something went wrong. Please try again.'
+          );
         }
       } catch (error: any) {
-        toast.error(error.message || "Unable to send your message right now.");
+        toast.error(error.message || 'Unable to send your message right now.');
       }
     },
     [cleanedFormId, cleanedSuccessMessage, form]
@@ -164,7 +175,11 @@ export default function FormContactMap({
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Your name" autoComplete="name" />
+                      <Input
+                        {...field}
+                        placeholder="Your name"
+                        autoComplete="name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -207,8 +222,10 @@ export default function FormContactMap({
                 )}
               />
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {cleanedSubmitLabel || "Send message"}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {cleanedSubmitLabel || 'Send message'}
               </Button>
             </form>
           </Form>
@@ -217,7 +234,7 @@ export default function FormContactMap({
           <div className="rounded-lg border bg-background shadow-sm">
             {hasMap ? (
               <iframe
-                title={cleanedLocationName || "Map"}
+                title={cleanedLocationName || 'Map'}
                 src={mapSrc ?? undefined}
                 width="100%"
                 height="320"
@@ -227,7 +244,8 @@ export default function FormContactMap({
               />
             ) : (
               <div className="flex h-[320px] w-full items-center justify-center rounded-t-lg bg-muted text-center text-sm text-muted-foreground">
-                Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to display an embedded map.
+                Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to display an embedded
+                map.
               </div>
             )}
             <div className="space-y-3 p-6">

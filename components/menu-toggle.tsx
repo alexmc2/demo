@@ -1,18 +1,18 @@
 // components/menu-toggle.tsx
-"use client";
+'use client';
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import * as React from 'react';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button1';
+import { cn } from '@/lib/utils';
 
 export function ModeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    const next = resolvedTheme === "dark" ? "light" : "dark";
+    const next = resolvedTheme === 'dark' ? 'light' : 'dark';
     setTheme(next);
   };
 
@@ -21,8 +21,8 @@ export function ModeToggle({ className }: { className?: string }) {
       variant="ghost"
       size="icon"
       className={cn(
-        "text-inherit hover:bg-transparent hover:text-inherit focus-visible:ring-0",
-        className,
+        'text-inherit hover:bg-transparent hover:text-inherit focus-visible:ring-0',
+        className
       )}
       onClick={toggleTheme}
     >

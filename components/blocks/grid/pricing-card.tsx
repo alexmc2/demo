@@ -1,18 +1,18 @@
 // components/blocks/grid/pricing-card.tsx
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { stegaClean } from "next-sanity";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
-import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types";
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button1';
+import { stegaClean } from 'next-sanity';
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { Check } from 'lucide-react';
+import { PAGE_QUERYResult, ColorVariant } from '@/sanity.types';
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
-type GridRow = Extract<Block, { _type: "grid-row" }>;
-type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
-type PricingCard = Extract<GridColumn, { _type: "pricing-card" }>;
+type Block = NonNullable<NonNullable<PAGE_QUERYResult>['blocks']>[number];
+type GridRow = Extract<Block, { _type: 'grid-row' }>;
+type GridColumn = NonNullable<NonNullable<GridRow['columns']>>[number];
+type PricingCard = Extract<GridColumn, { _type: 'pricing-card' }>;
 
-interface PricingCardProps extends Omit<PricingCard, "_type" | "_key"> {
+interface PricingCardProps extends Omit<PricingCard, '_type' | '_key'> {
   color?: ColorVariant;
 }
 
@@ -32,7 +32,7 @@ export default function PricingCard({
     >
       <div className="flex w-full flex-col justify-between border rounded-3xl p-8">
         <div
-          className={cn(color === "primary" ? "text-background" : undefined)}
+          className={cn(color === 'primary' ? 'text-background' : undefined)}
         >
           {title && (
             <div className="flex justify-between items-center">
@@ -67,8 +67,8 @@ export default function PricingCard({
           asChild
         >
           <Link
-            href={link?.href ? link.href : "#"}
-            target={link?.target ? "_blank" : undefined}
+            href={link?.href ? link.href : '#'}
+            target={link?.target ? '_blank' : undefined}
           >
             {link?.title}
           </Link>

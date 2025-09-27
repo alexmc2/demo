@@ -159,7 +159,7 @@
   --popover: #ffffff;
   --popover-foreground: #111827;
 
-  --primary: #499cd3; /* brand blue */
+  --primary: #0ea5e9; /* brand blue */
   --primary-foreground: #f8fafc;
 
   --secondary: #e2e8f0;
@@ -223,7 +223,7 @@
   --popover: #111c2f;
   --popover-foreground: #f8fafc;
 
-  --primary: #499cd3; /* keep brand consistent */
+  --primary: #7dd3fc; /* keep brand consistent */
   --primary-foreground: #f8fafc;
 
   --secondary: #1c2d46;
