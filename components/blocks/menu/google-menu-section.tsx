@@ -635,6 +635,37 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
   const navButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const hasRanInitialScroll = useRef(false);
 
+  const scrollActiveNavButtonIntoView = useCallback((button: HTMLButtonElement | null) => {
+    if (!button) {
+      return;
+    }
+
+    const container = button.parentElement;
+    if (!(container instanceof HTMLElement)) {
+      return;
+    }
+
+    if (container.scrollWidth <= container.clientWidth) {
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+
+    const isLeftOverflow = buttonRect.left < containerRect.left;
+    const isRightOverflow = buttonRect.right > containerRect.right;
+
+    if (!isLeftOverflow && !isRightOverflow) {
+      return;
+    }
+
+    const scrollDelta = isLeftOverflow
+      ? buttonRect.left - containerRect.left
+      : buttonRect.right - containerRect.right;
+
+    container.scrollBy({ left: scrollDelta, behavior: "smooth" });
+  }, []);
+
   useEffect(() => {
     if (!hasRanInitialScroll.current) {
       hasRanInitialScroll.current = true;
@@ -642,10 +673,8 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
     }
 
     const activeButton = activeCategory ? navButtonRefs.current[activeCategory] : null;
-    if (activeButton) {
-      activeButton.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
-    }
-  }, [activeCategory]);
+    scrollActiveNavButtonIntoView(activeButton ?? null);
+  }, [activeCategory, scrollActiveNavButtonIntoView]);
 
   const anchorId = sectionId ? stegaClean(sectionId) : undefined;
 
