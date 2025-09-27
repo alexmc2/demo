@@ -89,115 +89,181 @@ type ParsedCategory = {
 };
 
 const MAX_VISIBLE_TABS = 5;
-const COLOR_VARIANT_VALUES = [
-  "background",
-  "primary",
-  "secondary",
-  "card",
-  "accent",
-  "destructive",
-  "muted",
-  "white",
-  "black",
-  "light-gray",
-  "cool-gray",
-  "soft-blue",
-  "sky-blue",
-  "mint",
-  "sand",
-  "peach",
-  "slate",
-  "navy",
-  "charcoal",
-] as const satisfies readonly ColorVariant[];
 
-const COLOR_FALLBACKS: Record<
-  ColorVariant,
-  { base: string; foreground: string }
-> = {
+const COLOR_FALLBACKS = {
   background: {
     base: "var(--background)",
     foreground: "var(--foreground)",
   },
-  black: {
-    base: "var(--black)",
-    foreground: "var(--black-foreground)",
-  },
-  primary: {
-    base: "var(--primary)",
-    foreground: "var(--primary-foreground)",
-  },
-  secondary: {
-    base: "var(--secondary)",
-    foreground: "var(--secondary-foreground)",
+  foreground: {
+    base: "var(--foreground)",
+    foreground: "var(--background)",
   },
   card: {
     base: "var(--card)",
     foreground: "var(--card-foreground)",
   },
-  accent: {
-    base: "var(--accent)",
-    foreground: "var(--accent-foreground)",
+  "card-foreground": {
+    base: "var(--card-foreground)",
+    foreground: "var(--card)",
   },
-  destructive: {
-    base: "var(--destructive)",
-    foreground: "var(--destructive-foreground)",
+  popover: {
+    base: "var(--popover)",
+    foreground: "var(--popover-foreground)",
+  },
+  "popover-foreground": {
+    base: "var(--popover-foreground)",
+    foreground: "var(--popover)",
+  },
+  primary: {
+    base: "var(--primary)",
+    foreground: "var(--primary-foreground)",
+  },
+  "primary-foreground": {
+    base: "var(--primary-foreground)",
+    foreground: "var(--primary)",
+  },
+  secondary: {
+    base: "var(--secondary)",
+    foreground: "var(--secondary-foreground)",
+  },
+  "secondary-foreground": {
+    base: "var(--secondary-foreground)",
+    foreground: "var(--secondary)",
   },
   muted: {
     base: "var(--muted)",
     foreground: "var(--muted-foreground)",
   },
+  "muted-foreground": {
+    base: "var(--muted-foreground)",
+    foreground: "var(--muted)",
+  },
+  accent: {
+    base: "var(--accent)",
+    foreground: "var(--accent-foreground)",
+  },
+  "accent-foreground": {
+    base: "var(--accent-foreground)",
+    foreground: "var(--accent)",
+  },
+  destructive: {
+    base: "var(--destructive)",
+    foreground: "var(--destructive-foreground)",
+  },
+  "destructive-foreground": {
+    base: "var(--destructive-foreground)",
+    foreground: "var(--destructive)",
+  },
   white: {
     base: "var(--white)",
     foreground: "var(--white-foreground)",
+  },
+  "white-foreground": {
+    base: "var(--white-foreground)",
+    foreground: "var(--white)",
+  },
+  black: {
+    base: "var(--black)",
+    foreground: "var(--black-foreground)",
+  },
+  "black-foreground": {
+    base: "var(--black-foreground)",
+    foreground: "var(--black)",
   },
   "light-gray": {
     base: "var(--light-gray)",
     foreground: "var(--light-gray-foreground)",
   },
+  "light-gray-foreground": {
+    base: "var(--light-gray-foreground)",
+    foreground: "var(--light-gray)",
+  },
   "cool-gray": {
     base: "var(--cool-gray)",
     foreground: "var(--cool-gray-foreground)",
+  },
+  "cool-gray-foreground": {
+    base: "var(--cool-gray-foreground)",
+    foreground: "var(--cool-gray)",
   },
   "soft-blue": {
     base: "var(--soft-blue)",
     foreground: "var(--soft-blue-foreground)",
   },
+  "soft-blue-foreground": {
+    base: "var(--soft-blue-foreground)",
+    foreground: "var(--soft-blue)",
+  },
   "sky-blue": {
     base: "var(--sky-blue)",
     foreground: "var(--sky-blue-foreground)",
+  },
+  "sky-blue-foreground": {
+    base: "var(--sky-blue-foreground)",
+    foreground: "var(--sky-blue)",
   },
   mint: {
     base: "var(--mint)",
     foreground: "var(--mint-foreground)",
   },
+  "mint-foreground": {
+    base: "var(--mint-foreground)",
+    foreground: "var(--mint)",
+  },
   sand: {
     base: "var(--sand)",
     foreground: "var(--sand-foreground)",
+  },
+  "sand-foreground": {
+    base: "var(--sand-foreground)",
+    foreground: "var(--sand)",
   },
   peach: {
     base: "var(--peach)",
     foreground: "var(--peach-foreground)",
   },
+  "peach-foreground": {
+    base: "var(--peach-foreground)",
+    foreground: "var(--peach)",
+  },
   slate: {
     base: "var(--slate)",
     foreground: "var(--slate-foreground)",
+  },
+  "slate-foreground": {
+    base: "var(--slate-foreground)",
+    foreground: "var(--slate)",
   },
   navy: {
     base: "var(--navy)",
     foreground: "var(--navy-foreground)",
   },
+  "navy-foreground": {
+    base: "var(--navy-foreground)",
+    foreground: "var(--navy)",
+  },
   charcoal: {
     base: "var(--charcoal)",
     foreground: "var(--charcoal-foreground)",
   },
-};
+  "charcoal-foreground": {
+    base: "var(--charcoal-foreground)",
+    foreground: "var(--charcoal)",
+  },
+} as const satisfies Record<ColorVariant, { base: string; foreground: string }>;
 
-const MENU_PALETTE_PRESETS: Record<ColorVariant, { panel: ColorVariant; accent: ColorVariant }> = {
+const COLOR_VARIANT_VALUES = Object.keys(COLOR_FALLBACKS) as readonly ColorVariant[];
+const COLOR_VARIANT_SET = new Set<string>(COLOR_VARIANT_VALUES as readonly string[]);
+
+const MENU_PALETTE_PRESETS: Partial<Record<ColorVariant, { panel: ColorVariant; accent: ColorVariant }>> = {
   background: { panel: "card", accent: "primary" },
+  foreground: { panel: "card", accent: "primary" },
   primary: { panel: "soft-blue", accent: "white" },
+  "primary-foreground": { panel: "primary", accent: "white" },
   secondary: { panel: "white", accent: "primary" },
   card: { panel: "white", accent: "primary" },
+  popover: { panel: "card", accent: "primary" },
   accent: { panel: "white", accent: "primary" },
   destructive: { panel: "white", accent: "light-gray" },
   muted: { panel: "white", accent: "primary" },
@@ -215,8 +281,33 @@ const MENU_PALETTE_PRESETS: Record<ColorVariant, { panel: ColorVariant; accent: 
   charcoal: { panel: "navy", accent: "white" },
 };
 
+const DEFAULT_MENU_PRESET = {
+  panel: "card",
+  accent: "primary",
+} as const satisfies { panel: ColorVariant; accent: ColorVariant };
+
+function resolveMenuPreset(variant: ColorVariant) {
+  const directPreset = MENU_PALETTE_PRESETS[variant];
+  if (directPreset) {
+    return directPreset;
+  }
+
+  if (variant.endsWith("-foreground")) {
+    const baseCandidate = variant.replace(/-foreground$/, "");
+    if (isColorVariant(baseCandidate)) {
+      const basePreset = MENU_PALETTE_PRESETS[baseCandidate];
+      if (basePreset) {
+        return basePreset;
+      }
+    }
+  }
+
+  const backgroundPreset = MENU_PALETTE_PRESETS.background;
+  return backgroundPreset ?? DEFAULT_MENU_PRESET;
+}
+
 function isColorVariant(value: string): value is ColorVariant {
-  return (COLOR_VARIANT_VALUES as readonly string[]).includes(value);
+  return COLOR_VARIANT_SET.has(value);
 }
 
 function toColorVariant(value?: string | null): ColorVariant | null {
@@ -518,7 +609,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
 
   const backgroundVariant =
     toColorVariant(appearance?.backgroundColor) ?? "background";
-  const preset = MENU_PALETTE_PRESETS[backgroundVariant];
+  const preset = resolveMenuPreset(backgroundVariant);
   const panelVariant = toColorVariant(appearance?.panelColor) ?? preset.panel;
   const accentVariant = toColorVariant(appearance?.accentColor) ?? preset.accent;
 
