@@ -18,6 +18,7 @@ type LottieAnimationProps = Extract<
       url?: string | null;
     } | null;
   } | null;
+  colorVariantDark?: ColorVariant | null;
 };
 
 type SpacingScale = "none" | "tight" | "compact" | "comfortable" | "roomy";
@@ -80,6 +81,7 @@ const BOTTOM_SPACING_CLASS_MAP: Record<SpacingScale, string> = {
 export default function LottieAnimationBlock({
   padding,
   colorVariant,
+  colorVariantDark,
   sectionWidth,
   animationAlign,
   animationSize,
@@ -93,6 +95,9 @@ export default function LottieAnimationBlock({
   textSpacing,
 }: LottieAnimationProps) {
   const resolvedColor = (stegaClean(colorVariant) || undefined) as
+    | ColorVariant
+    | undefined;
+  const resolvedColorDark = (stegaClean(colorVariantDark) || undefined) as
     | ColorVariant
     | undefined;
   const width = stegaClean(sectionWidth);
@@ -168,6 +173,7 @@ export default function LottieAnimationBlock({
   return (
     <SectionContainer
       color={resolvedColor}
+      colorDark={resolvedColorDark}
       padding={padding}
       className={cn(
         !hasTopPadding ? TOP_SPACING_CLASS_MAP[spacing] : undefined,

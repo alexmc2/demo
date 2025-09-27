@@ -21,6 +21,12 @@ export default defineType({
       description: "Select a background color variant.",
     }),
     defineField({
+      name: "colorVariantDark",
+      type: "color-variant",
+      title: "Dark Mode Color Variant",
+      description: "Optional override used when the site is viewed in dark mode.",
+    }),
+    defineField({
       name: "sectionWidth",
       type: "string",
       title: "Section Width",

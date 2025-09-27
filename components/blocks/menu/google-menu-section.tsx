@@ -742,12 +742,14 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
       ? colorVar(categoryVariant)
       : accentColorDark;
 
-  const borderColor = borderVariant ? colorVar(borderVariant) : '#cbd5e1';
+  const borderColor = borderVariant
+    ? colorVar(borderVariant)
+    : `color-mix(in srgb, ${panelColor} 74%, ${accentColor} 26%)`;
   const borderColorDark = borderVariantDark
     ? colorVar(borderVariantDark)
     : borderVariant
       ? colorVar(borderVariant)
-      : '#1e293b';
+      : `color-mix(in srgb, ${panelColorDark} 74%, ${accentColorDark} 26%)`;
 
   const paletteStyle = useMemo<MenuCSSVariables>(() => {
     const style: MenuCSSVariables = {
@@ -1150,8 +1152,9 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
               <SheetContent
                 side="left"
                 className="backdrop-blur-xl border border-[color:var(--menu-border-color)] bg-background text-[color:var(--menu-headline)] dark:border-[color:var(--menu-border-color-dark)] dark:bg-[color:var(--menu-background-dark)] dark:text-[color:var(--menu-headline-dark)]"
+                style={paletteStyle}
               >
-                <SheetHeader className="border-b border-[color:var(--menu-border-color)] px-4 pb-4 dark:border-[color:var(--menu-border-color-dark)]">
+                <SheetHeader className="border-b border-[color:var(--menu-border-color)] px-4 py-4 dark:border-[color:var(--menu-border-color-dark)]">
                   <SheetTitle className="text-lg font-semibold text-[color:var(--menu-headline)] dark:text-[color:var(--menu-headline-dark)]">
                     {title ? stegaClean(title) : 'Menu'}
                   </SheetTitle>
@@ -1251,6 +1254,7 @@ export default function MenuGoogleSection(props: MenuGoogleSectionProps) {
                 <DropdownMenuContent
                   align="end"
                   className="min-w-[12rem] border-[color:var(--menu-border-color)] bg-[color:var(--menu-surface)] text-[color:var(--menu-surface-foreground)] dark:border-[color:var(--menu-border-color-dark)] dark:bg-[color:var(--menu-surface-dark)] dark:text-[color:var(--menu-surface-foreground-dark)]"
+                  style={paletteStyle}
                 >
                   {desktopOverflowTabs.map((category) => (
                     <DropdownMenuItem

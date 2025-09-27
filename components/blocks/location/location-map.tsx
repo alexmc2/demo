@@ -7,7 +7,7 @@ import { stegaClean } from "next-sanity";
 import SectionContainer from "@/components/ui/section-container";
 import type { ColorVariant, SectionPadding } from "@/sanity.types";
 
-const GOOGLE_MAPS_EMBED_BASE = "https://www.google.com/maps/embed/v1/place";
+const GOOGLE_MAPS_EMBED_BASE = "https://maps.google.com/maps";
 
 export type LocationMapBlock = {
   _type: "location-map";
@@ -39,27 +39,39 @@ export default function LocationMap({
 }: LocationMapProps) {
   const cleanedColor = colorVariant ? stegaClean(colorVariant) : undefined;
   const cleanedLabel = cleanString(locationLabel) ?? "Our location";
-  const cleanedLocationName = cleanString(locationName) ?? "Location";
+  const locationNameQuery = cleanString(locationName);
+  const cleanedLocationName = locationNameQuery ?? "Location";
   const cleanedAddress = cleanString(address);
 
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
   const mapSrc = useMemo(() => {
-    if (!googleMapsApiKey || typeof latitude !== "number" || typeof longitude !== "number") {
+    const queryTarget = (() => {
+      if (typeof latitude === "number" && typeof longitude === "number") {
+        return `${latitude},${longitude}`;
+      }
+
+      if (cleanedAddress) {
+        return cleanedAddress;
+      }
+
+      if (locationNameQuery) {
+        return locationNameQuery;
+      }
+
+      return null;
+    })();
+
+    if (!queryTarget) {
       return null;
     }
 
-    const params = new URLSearchParams({
-      key: googleMapsApiKey,
-      q: `${latitude},${longitude}`,
-    });
+    const params = new URLSearchParams({ q: queryTarget, output: "embed" });
 
-    if (mapZoom) {
-      params.set("zoom", String(mapZoom));
+    if (typeof mapZoom === "number" && Number.isFinite(mapZoom)) {
+      params.set("z", String(mapZoom));
     }
 
     return `${GOOGLE_MAPS_EMBED_BASE}?${params.toString()}`;
-  }, [googleMapsApiKey, latitude, longitude, mapZoom]);
+  }, [latitude, longitude, mapZoom, cleanedAddress, locationNameQuery]);
 
   const hasMap = Boolean(mapSrc);
 
@@ -79,7 +91,7 @@ export default function LocationMap({
             />
           ) : (
             <div className="flex h-[320px] w-full items-center justify-center rounded-t-lg bg-muted text-center text-sm text-muted-foreground">
-              Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to display an embedded map.
+              Add location coordinates or an address to display an embedded map.
             </div>
           )}
           <div className="space-y-3 p-6">

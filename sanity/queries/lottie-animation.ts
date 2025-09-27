@@ -9,6 +9,7 @@ export const lottieAnimationQuery = groq`
     _key,
     padding,
     colorVariant,
+    colorVariantDark,
     sectionWidth,
     animationAlign,
     verticalSpacing,

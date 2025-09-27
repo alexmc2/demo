@@ -2,51 +2,116 @@
 import { cn } from "@/lib/utils";
 import { SectionPadding, ColorVariant } from "@/sanity.types";
 
-const BACKGROUND_CLASS_MAP: Partial<Record<ColorVariant, string>> = {
-  background: "bg-background",
-  foreground: "bg-foreground",
-  primary: "bg-primary",
-  "primary-foreground": "bg-primary-foreground",
-  secondary: "bg-secondary",
-  "secondary-foreground": "bg-secondary-foreground",
-  card: "bg-card",
-  "card-foreground": "bg-card-foreground",
-  popover: "bg-popover",
-  "popover-foreground": "bg-popover-foreground",
-  accent: "bg-accent",
-  "accent-foreground": "bg-accent-foreground",
-  destructive: "bg-destructive",
-  "destructive-foreground": "bg-destructive-foreground",
-  muted: "bg-muted",
-  "muted-foreground": "bg-muted-foreground",
-  white: "bg-white",
-  "white-foreground": "bg-white-foreground",
-  black: "bg-black",
-  "black-foreground": "bg-black-foreground",
-  "light-gray": "bg-light-gray",
-  "light-gray-foreground": "bg-light-gray-foreground",
-  "cool-gray": "bg-cool-gray",
-  "cool-gray-foreground": "bg-cool-gray-foreground",
-  "soft-blue": "bg-soft-blue",
-  "soft-blue-foreground": "bg-soft-blue-foreground",
-  "sky-blue": "bg-sky-blue",
-  "sky-blue-foreground": "bg-sky-blue-foreground",
-  mint: "bg-mint",
-  "mint-foreground": "bg-mint-foreground",
-  sand: "bg-sand",
-  "sand-foreground": "bg-sand-foreground",
-  peach: "bg-peach",
-  "peach-foreground": "bg-peach-foreground",
-  slate: "bg-slate",
-  "slate-foreground": "bg-slate-foreground",
-  navy: "bg-navy",
-  "navy-foreground": "bg-navy-foreground",
-  charcoal: "bg-charcoal",
-  "charcoal-foreground": "bg-charcoal-foreground",
+const DEFAULT_BACKGROUND_CLASSES = {
+  base: "bg-background",
+  dark: "dark:bg-background",
+} as const;
+
+const BACKGROUND_CLASS_MAP: Partial<
+  Record<ColorVariant, { base: string; dark: string }>
+> = {
+  background: DEFAULT_BACKGROUND_CLASSES,
+  foreground: { base: "bg-foreground", dark: "dark:bg-foreground" },
+  primary: { base: "bg-primary", dark: "dark:bg-primary" },
+  "primary-foreground": {
+    base: "bg-primary-foreground",
+    dark: "dark:bg-primary-foreground",
+  },
+  secondary: { base: "bg-secondary", dark: "dark:bg-secondary" },
+  "secondary-foreground": {
+    base: "bg-secondary-foreground",
+    dark: "dark:bg-secondary-foreground",
+  },
+  card: { base: "bg-card", dark: "dark:bg-card" },
+  "card-foreground": {
+    base: "bg-card-foreground",
+    dark: "dark:bg-card-foreground",
+  },
+  popover: { base: "bg-popover", dark: "dark:bg-popover" },
+  "popover-foreground": {
+    base: "bg-popover-foreground",
+    dark: "dark:bg-popover-foreground",
+  },
+  accent: { base: "bg-accent", dark: "dark:bg-accent" },
+  "accent-foreground": {
+    base: "bg-accent-foreground",
+    dark: "dark:bg-accent-foreground",
+  },
+  destructive: { base: "bg-destructive", dark: "dark:bg-destructive" },
+  "destructive-foreground": {
+    base: "bg-destructive-foreground",
+    dark: "dark:bg-destructive-foreground",
+  },
+  muted: { base: "bg-muted", dark: "dark:bg-muted" },
+  "muted-foreground": {
+    base: "bg-muted-foreground",
+    dark: "dark:bg-muted-foreground",
+  },
+  white: { base: "bg-white", dark: "dark:bg-white" },
+  "white-foreground": {
+    base: "bg-white-foreground",
+    dark: "dark:bg-white-foreground",
+  },
+  black: { base: "bg-black", dark: "dark:bg-black" },
+  "black-foreground": {
+    base: "bg-black-foreground",
+    dark: "dark:bg-black-foreground",
+  },
+  "light-gray": { base: "bg-light-gray", dark: "dark:bg-light-gray" },
+  "light-gray-foreground": {
+    base: "bg-light-gray-foreground",
+    dark: "dark:bg-light-gray-foreground",
+  },
+  "cool-gray": { base: "bg-cool-gray", dark: "dark:bg-cool-gray" },
+  "cool-gray-foreground": {
+    base: "bg-cool-gray-foreground",
+    dark: "dark:bg-cool-gray-foreground",
+  },
+  "soft-blue": { base: "bg-soft-blue", dark: "dark:bg-soft-blue" },
+  "soft-blue-foreground": {
+    base: "bg-soft-blue-foreground",
+    dark: "dark:bg-soft-blue-foreground",
+  },
+  "sky-blue": { base: "bg-sky-blue", dark: "dark:bg-sky-blue" },
+  "sky-blue-foreground": {
+    base: "bg-sky-blue-foreground",
+    dark: "dark:bg-sky-blue-foreground",
+  },
+  mint: { base: "bg-mint", dark: "dark:bg-mint" },
+  "mint-foreground": {
+    base: "bg-mint-foreground",
+    dark: "dark:bg-mint-foreground",
+  },
+  sand: { base: "bg-sand", dark: "dark:bg-sand" },
+  "sand-foreground": {
+    base: "bg-sand-foreground",
+    dark: "dark:bg-sand-foreground",
+  },
+  peach: { base: "bg-peach", dark: "dark:bg-peach" },
+  "peach-foreground": {
+    base: "bg-peach-foreground",
+    dark: "dark:bg-peach-foreground",
+  },
+  slate: { base: "bg-slate", dark: "dark:bg-slate" },
+  "slate-foreground": {
+    base: "bg-slate-foreground",
+    dark: "dark:bg-slate-foreground",
+  },
+  navy: { base: "bg-navy", dark: "dark:bg-navy" },
+  "navy-foreground": {
+    base: "bg-navy-foreground",
+    dark: "dark:bg-navy-foreground",
+  },
+  charcoal: { base: "bg-charcoal", dark: "dark:bg-charcoal" },
+  "charcoal-foreground": {
+    base: "bg-charcoal-foreground",
+    dark: "dark:bg-charcoal-foreground",
+  },
 };
 
 interface SectionContainerProps {
   color?: ColorVariant | null;
+  colorDark?: ColorVariant | null;
   padding?: SectionPadding | null;
   children: React.ReactNode;
   className?: string;
@@ -56,13 +121,29 @@ interface SectionContainerProps {
 
 export default function SectionContainer({
   color = "background",
+  colorDark,
   padding,
   children,
   className,
   id,
   style,
 }: SectionContainerProps) {
-  const backgroundClass = BACKGROUND_CLASS_MAP[color ?? "background"] ?? "bg-background";
+  const resolveBackgroundClasses = (variant?: ColorVariant | null) => {
+    if (!variant) {
+      return DEFAULT_BACKGROUND_CLASSES;
+    }
+
+    return BACKGROUND_CLASS_MAP[variant] ?? DEFAULT_BACKGROUND_CLASSES;
+  };
+
+  const { base: backgroundClass, dark: fallbackDarkClass } =
+    resolveBackgroundClasses(color);
+
+  const overrideDarkClass = colorDark
+    ? resolveBackgroundClasses(colorDark).dark
+    : undefined;
+
+  const backgroundClassDark = overrideDarkClass ?? fallbackDarkClass;
 
   return (
     <div
@@ -71,6 +152,7 @@ export default function SectionContainer({
         "relative",
         id ? "scroll-mt-24 lg:scroll-mt-32" : undefined,
         backgroundClass,
+        backgroundClassDark,
         padding?.top ? "pt-16 xl:pt-20" : undefined,
         padding?.bottom ? "pb-16 xl:pb-20" : undefined,
         className

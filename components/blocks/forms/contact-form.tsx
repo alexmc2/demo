@@ -19,7 +19,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Input, formFieldBaseClasses } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import type { ColorVariant, SectionPadding } from '@/sanity.types';
 
 export type ContactFormBlock = {
@@ -66,7 +67,7 @@ export default function ContactForm({
   successMessage,
 }: FormContactProps) {
   const cleanedColor = colorVariant ? stegaClean(colorVariant) : undefined;
-  const cleanedHeading = cleanString(heading) ?? 'Get in touch';
+  const cleanedHeading = cleanString(heading);
   const cleanedBody = cleanString(body);
   const cleanedFormId = cleanString(formspreeFormId);
   const cleanedSubmitLabel = cleanString(submitButtonLabel) ?? 'Send message';
@@ -130,16 +131,20 @@ export default function ContactForm({
   return (
     <SectionContainer color={cleanedColor} padding={padding}>
       <div className="mx-auto max-w-2xl space-y-8">
-        <div className="space-y-4">
-          <h2 className="text-3xl font-semibold tracking-tight lg:text-4xl">
-            {cleanedHeading}
-          </h2>
-          {cleanedBody && (
-            <p className="text-muted-foreground whitespace-pre-line">
-              {cleanedBody}
-            </p>
-          )}
-        </div>
+        {(cleanedHeading || cleanedBody) && (
+          <div className="space-y-4">
+            {cleanedHeading && (
+              <h2 className="text-3xl font-semibold tracking-tight lg:text-4xl">
+                {cleanedHeading}
+              </h2>
+            )}
+            {cleanedBody && (
+              <p className="text-muted-foreground whitespace-pre-line">
+                {cleanedBody}
+              </p>
+            )}
+          </div>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -191,7 +196,10 @@ export default function ContactForm({
                     <textarea
                       {...field}
                       rows={5}
-                      className="flex min-h-[160px] w-full rounded-md border border-input bg-white px-3 py-3 text-base shadow-none transition-colors placeholder:text-muted-foreground focus-visible:border-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                      className={cn(
+                        formFieldBaseClasses,
+                        'flex min-h-[160px] resize-y px-3 py-3'
+                      )}
                       placeholder="How can we help?"
                     />
                   </FormControl>
@@ -199,7 +207,7 @@ export default function ContactForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting} className='dark:bg-sky-500'>
               {isSubmitting && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}

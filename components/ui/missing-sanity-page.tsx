@@ -1,5 +1,5 @@
 // components/ui/missing-sanity-page.tsx
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 
 export default function MissingSanityPage({
   document,
@@ -12,14 +12,14 @@ export default function MissingSanityPage({
     <div className="min-h-screen flex items-center justify-center">
       <div className="container">
         <h1 className="text-center text-2xl">
-          Missing{" "}
+          Missing{' '}
           <Badge variant="outline" className="text-lg">
             {document}
-          </Badge>{" "}
-          document with slug{" "}
+          </Badge>{' '}
+          document with slug{' '}
           <Badge variant="outline" className="text-lg">
             {slug}
-          </Badge>{" "}
+          </Badge>{' '}
           in Sanity Studio
         </h1>
       </div>

@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import SectionContainer from '@/components/ui/section-container';
 import { stegaClean } from 'next-sanity';
-import { PAGE_QUERYResult } from '@/sanity.types';
+import { PAGE_QUERYResult, ColorVariant } from '@/sanity.types';
 import SplitContent from './split-content';
 import SplitCardsList from './split-cards-list';
 import SplitImage from './split-image';
@@ -27,15 +27,26 @@ const componentMap: {
 export default function SplitRow({
   padding,
   colorVariant,
+  colorVariantDark,
   sectionId,
   noGap,
   splitColumns,
 }: SplitRowWithAnchor) {
-  const color = stegaClean(colorVariant);
+  const color = (stegaClean(colorVariant) || undefined) as
+    | ColorVariant
+    | undefined;
+  const colorDark = (stegaClean(colorVariantDark) || undefined) as
+    | ColorVariant
+    | undefined;
   const anchorId = sectionId ? stegaClean(sectionId) : undefined;
 
   return (
-    <SectionContainer color={color} padding={padding} id={anchorId}>
+    <SectionContainer
+      color={color}
+      colorDark={colorDark}
+      padding={padding}
+      id={anchorId}
+    >
       {splitColumns && splitColumns?.length > 0 && (
         <div
           className={cn(
